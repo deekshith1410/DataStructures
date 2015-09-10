@@ -108,7 +108,7 @@ class LinkedStack {
 	}
 }
 
-class UnboundedArraysCapacity{
+class StackOperationsOfPositiveandNegativeSeperation{
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
 		String str = scan.nextLine();
