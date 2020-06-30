@@ -1,0 +1,46 @@
+1. I will take you through our FSL transformation journey in the next few minutes. 
+	Opportunities that we identified and executed to transform this legacy process to make it more agile and efficient.
+2. To begin with a short introduction about FSL.  
+	it is a Stochastic Gradient Descent-Neural Network model used for representing the likelihood of a charge or txn to be fraud at Point of Sale. 
+	This Model updates every week and leverages recent data to reflect changes in fraudster tactics.
+	and this model will not be developed from scratch every week, but will refresh the weights or coefficients in the existing model to capture the constantly evolving fraud trends.
+
+talking about high level process flow, the first step is
+3. Data Pull - pull all frauds and a sample of good transactions 
+	Data QC - we are using DataQC tool which is in python.
+	Model is trained with SGD-NN model
+	Model QC - PSI/Cohens-D checks are performed
+--- This capability is implemented End-To-End in CAS right now from Data creation till Model Deployment. 
+
+
+(can anyone guess what is wrong in this approach) 
+what is wrong with this approach is using CAS as a system for analytical activities like Model Training, evaluation.
+
+CAS being a production system should ideally be used for real-time transaction processing and authorizations and 
+should not be used for Model Training or analytical purposes.
+And Given that model recalibration which happens every week is an analytical activity and also a batch process, 
+CAS is not the ideal platform for end-to-end implementation of this process
+so there is an opportunity to reduce the load on CAS by migrating the existing resource intensive process like model build and estimation to our analytical environments.
+
+
+This is the primary driver for the migration and along with it there are few secondary opportunities as well like
+2.Maintenance or making Enhancements is time consuming is CAS as all change requests are treated as production changes and 
+is dependent on Tech capacity
+3.Retention of Data, Model files and reports is for very short duration    due to space constraints in CAS and even modelers are facing hard-time accessing them.
+
+
+
+To address the stated opportunities, we have designed a -POA- solution, where we have used
+ML studio which basically resides in GOLD server for designing and developing the Framework, and for transaction data, we have leveraged data from Cornerstone CAS slices.
+we have followed a modular approach while building the package, so that any change or enhancement can easily be incorporated.
+Processes like Model Training, QC checks are performed automatically in Gold server every week and the required model files will be passed to AMC automatically.
+Model implementation decision will be taken on AMC UI by the modelers based on the QC metrics and then AMC will Load the model into downstream production systems.
+
+
+
+Talking about the benefits in POA :
+This is similar to auto-model refresh capability in terms of design
+Execution Time is reduced from 15 hrs to 9 hrs and on the other hand, we are even freeing up 15 hrs of CAS system's capacity.
+Though we have developed this framework for FSL, the modules can be easily scalable can be used for similar self learning techniques.
+we can also maintain a repository of 12 to 18 months of data and other files in Gold server and can be made available for modellers , as the space here is much cheaper and duly available when compared to CAS.
+/
